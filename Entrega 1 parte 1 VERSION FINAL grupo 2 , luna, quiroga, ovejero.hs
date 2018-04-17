@@ -3,7 +3,8 @@ import Text.Show.Functions
 import Data.List
 import Data.Maybe
 import Test.Hspec
-
+--Definir type Evento
+--Definir type billetera
 
 data Usuario = Usuario {
 nombre :: String,
@@ -12,18 +13,22 @@ dinero :: Float
 
 nuevodinero monto usuario = usuario {dinero = monto}
 
+--Verificar el tipo de los eventos
 deposito depositardinero usuario = nuevodinero (depositardinero + dinero usuario) usuario
 
 extraer extraerdinero usuario = nuevodinero (dinero usuario - extraerdinero) usuario
 
+--Usemos max que esta bonito
 extraccion extraerdinero usuario | extraerdinero < dinero usuario = extraer extraerdinero usuario
                                  | otherwise = cierrecuenta usuario
 
+--Usemos la funcion min
 upgrade usuario | dinero usuario * 0.2 <= 10 = nuevodinero (dinero usuario * 1.2) usuario
                 | otherwise = quedaigual usuario
 
 cierrecuenta usuario = nuevodinero 0 usuario
 
+--id
 quedaigual usuario = nuevodinero (dinero usuario) usuario
 
 crearusuario nuevonombre billeterainicial = Usuario nuevonombre billeterainicial
@@ -31,19 +36,26 @@ pepe = Usuario "Jose" 10
 lucho = Usuario "Luciano" 2
 pepe2 = Usuario "Jose" 20
 
+
+--Agregar una funcion generica para generar los eventos a partir de las  transacciones
+-- Modelar las transacciones reutilizando la funcion definida mas arriba
 transaccion1 usuario | nombre usuario == "Luciano" = cierrecuenta usuario
                      | otherwise = quedaigual usuario
 
 transaccion2 usuario | nombre usuario == "Jose" = deposito 5 usuario
                      | otherwise = quedaigual usuario
-
+--Aplicacion parcial
 tocoymevoy usuario = (cierrecuenta . upgrade . deposito 15) usuario
 ahorranteerrante usuario = (deposito 10 . upgrade . deposito 8 . extraccion 1 . deposito 2 . deposito 1) usuario
-
+--Definir como una transaccion
 transaccion3 lucho = tocoymevoy lucho
 
 transaccion4 lucho = ahorranteerrante lucho
 
+
+--Delegar la igualdad de los nombres
+--Mejorar expresividad
+--Hacer generico
 transacciondeunidades deusuario1 ausuario2 efectosobreusuario | nombre efectosobreusuario == nombre ausuario2 = deposito 5 efectosobreusuario
                             | nombre efectosobreusuario == nombre deusuario1 = extraer 5 efectosobreusuario
                             | otherwise = quedaigual efectosobreusuario
@@ -62,7 +74,8 @@ it "Queda igual a una billetera de 10 monedas" $ quedaigual (Usuario "Testing" 1
 it "Depositar 1000 y tener un Upgrade a una billetera de 10 monedas" $ ((upgrade . deposito 1000) (Usuario "Testing" 10)) `shouldBe` (Usuario "Testing" 10) {dinero = 1010}
 
 describe "Usuarios" $ do
-it "Consulto la billetera de pepe" $ pepe `shouldBe` pepe {dinero = 10}
+--Arreglar estos tests
+it "Consulto la billetera de pepe" $ billetera pepe `shouldBe` pepe {dinero = 10}
 it "Cual es la billetera de pepe luego de un cierre de cuenta" $ cierrecuenta pepe `shouldBe` pepe {dinero = 0}
 it "¿Cómo quedaría la billetera de Pepe si le depositan 15 monedas, extrae 2, y tiene un Upgrade?" $ ((upgrade . extraer 2 . deposito 15)pepe) `shouldBe` pepe {dinero = 27.6}
 
