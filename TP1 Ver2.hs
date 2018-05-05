@@ -63,19 +63,45 @@ transaccion2 :: TransacciondePrueba
 
 transaccion2 usuario = transaccion deposito 5 usuario "Jose"
 
-tocoymevoy = (cierrecuenta . upgrade . deposito 15)
+tocoymevoy usuario | nombre usuario == "Luciano" = (cierrecuenta . upgrade . deposito 15) (dinero usuario)
+                   | otherwise = id dinero usuario
 
-ahorranteerrante = (deposito 10 . upgrade . deposito 8 . extraccion 1 . deposito 2 . deposito 1)
+ahorranteerrante usuario | nombre usuario == "Luciano" = (deposito 10 . upgrade . deposito 8 . extraccion 1 . deposito 2 . deposito 1) (dinero usuario)
+                         | otherwise= id dinero usuario
 
-transaccion3 lucho= tocoymevoy (dinero lucho)
 
-transaccion4 lucho= ahorranteerrante (dinero lucho)
+transaccion3 :: TransacciondePrueba
+
+transaccion3 usuario= tocoymevoy usuario
+
+transaccion4 :: TransacciondePrueba
+
+transaccion4 usuario= ahorranteerrante (usuario)
 
 transacciondeunidades cantidad deusuario1 ausuario2 usuarioaComparar | nombre usuarioaComparar == nombre ausuario2 = deposito cantidad (dinero usuarioaComparar)
                                                               | nombre usuarioaComparar == nombre deusuario1 = extraccion cantidad (dinero usuarioaComparar)
                                                               | otherwise = id (dinero usuarioaComparar)
 
 transaccion5 deusuario1 ausuario2 usuarioaComparar = transacciondeunidades 7 deusuario1 ausuario2 usuarioaComparar
+
+transaccion5aux :: TransacciondePrueba
+transaccion5aux usuario = transacciondeunidades 7 pepe lucho usuario
+
+estadoLuegoDe transaccion usuario = usuario { dinero = transaccion usuario }
+
+estadoTransacciones transaccion1 transaccion2 usuario = usuario { dinero = transaccion1 ((estadoLuegoDe transaccion2) usuario) }
+
+-- bloque + user
+
+bloque1 =  ( estadoLuegoDe transaccion3 . estadoLuegoDe transaccion5aux . estadoLuegoDe transaccion4 . estadoLuegoDe transaccion3 . estadoLuegoDe transaccion2 . estadoLuegoDe transaccion2 . estadoLuegoDe transaccion2 . estadoLuegoDe transaccion1)
+
+--mayoresaN n lista = filter ( < n) (dinero (bloque1 usuario ))
+
+bloque2 =  ( estadoLuegoDe transaccion2 . estadoLuegoDe transaccion2 . estadoLuegoDe transaccion2 . estadoLuegoDe transaccion2 . estadoLuegoDe transaccion2)
+
+blockchain = bloque1 . bloque1 . bloque1 . bloque1 . bloque1 . bloque1 . bloque1 . bloque1 . bloque1 . bloque1 . bloque2
+
+
 
 
 testeo = hspec $ do
