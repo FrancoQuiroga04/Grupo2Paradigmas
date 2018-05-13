@@ -88,11 +88,9 @@ transacciondeunidades cantidad deusuario1 ausuario2 usuarioaComparar | nombre us
                                                               | nombre usuarioaComparar == nombre deusuario1 = extraccion cantidad (dinero usuarioaComparar)
                                                               | otherwise = id (dinero usuarioaComparar)
 
-transaccion5 deusuario1 ausuario2 usuarioaComparar = transacciondeunidades 7 deusuario1 ausuario2 usuarioaComparar
+transaccion5 usuario = transacciondeunidades 7 pepe lucho usuario
 
---Para que sea del mismo tipo que el resto hago esta transaccion5aux, pero para que cumpla con el enunciado y las verificaciones que pide la primera parte, la estructura debería ser la otra, ver que hacer con esto
-transaccion5aux :: TransacciondePrueba
-transaccion5aux usuario = transacciondeunidades 7 pepe lucho usuario
+transaccion5 :: TransacciondePrueba
 
 --funcionan al aplicarse las 3 transacciones, falta codear la verificacion y el tipo
 estadoLuegoDe transaccion usuario = usuario { dinero = transaccion usuario }
