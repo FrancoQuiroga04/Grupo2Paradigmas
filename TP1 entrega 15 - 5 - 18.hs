@@ -8,6 +8,7 @@ type Nombre = String
 type Dinero = Float
 type Billetera = Float
 type Evento = Dinero -> Billetera -> Billetera
+// TODO: type Evento = Billetera -> Billetera
 type EventoB = Billetera -> Billetera
 
 data Usuario = Usuario {
@@ -15,7 +16,7 @@ nombre :: Nombre,
 billetera :: Billetera
 } deriving (Show, Eq)
 
-
+// TODO: deposito :: Dinero -> Evento
 deposito :: Evento
 deposito billetera = (+) billetera
 
