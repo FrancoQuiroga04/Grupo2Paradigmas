@@ -2,66 +2,68 @@
 import Text.Show.Functions
 import Data.List
 import Data.Maybe
-import Test.Hspec
+
 
 type Nombre = String
 type Dinero = Float
 type Billetera = Float
-type Evento = Dinero -> Billetera -> Billetera
-type EventoB = Billetera -> Billetera
+type Evento = Billetera -> Billetera
+
 
 data Usuario = Usuario {
-nombre :: Nombre,
+nombre :: Nombre
 billetera :: Billetera
 } deriving (Show, Eq)
 
+--Tengo mis dudas con deposito, esta bien definida, pero se supone que tiene que ser de tipo evento SOLAMENTE y no se me ocurre como hacer para que 
+--quede de esa forma. Igualmente compila todo, tendriamos que arreglar los tests y ver si en serio hace lo que queremos.
+deposito :: Dinero -> Evento
+deposito = (+)
 
-deposito :: Evento
-deposito billetera = (+) billetera
-
-
-extraccion :: Evento
+--Lo mismo aca
+extraccion :: Dinero -> Evento
 extraccion dineroAextraer billetera  = max 0 (billetera - dineroAextraer)
 
 
-upgrade :: EventoB
+upgrade :: Evento
 upgrade billetera = billetera * 1.2
 
 
 cierrecuenta :: Evento
-cierrecuenta billetera dinero = 0
+cierrecuenta billetera = 0
 
 
 quedaigual :: Evento
-quedaigual billetera dinero = id billetera
+quedaigual = id
 
 pepe = Usuario "Jose" 10
 lucho = Usuario "Luciano" 2
 pepe2 = Usuario "Jose" 20
 
-type Transaccion = Evento -> Dinero -> Usuario -> String -> Billetera
+--Esta funcion sirve para comparar usuarios, sea cual sea el dato por el cual se los compare.
+funcionComparaUsuarios :: Eq a => ( Usuario -> a ) -> Usuario -> Usuario -> Bool
+funcionComparaUsuarios funcionQueObtieneDatoDelUsuario usuario1 usuario2 = funcionQueObtieneDatoDelUsuario usuario1 == funcionQueObtieneDatoDelUsuario usuario2
 
+type Transaccion = Evento -> Usuario -> Usuario -> Evento
 transaccion :: Transaccion
-transaccion nombreTransaccion cantidadDinero usuario nombreaComparar |  nombre usuario == nombreaComparar = nombreTransaccion (billetera usuario) cantidadDinero
-                                                                     |  otherwise = id (billetera usuario)
+transaccion evento usuario usuarioAcomparar |  funcionComparaUsuarios nombre usuario usuarioAcomparar = evento
+                                            |  otherwise = quedaigual
 
 
-type TransacciondePrueba = Usuario -> Billetera
 
+type TransacciondePrueba = Usuario -> Usuario -> Evento
 transaccion1 :: TransacciondePrueba
-transaccion1 usuario = transaccion cierrecuenta 0 usuario "Luciano"
-
+transaccion1 usuario lucho = transaccion cierrecuenta usuario lucho
 
 transaccion2 :: TransacciondePrueba
-transaccion2 usuario = transaccion deposito 5 usuario "Jose"
+transaccion2 usuario pepe = transaccion (deposito 5) usuario pepe
 
 
-tocoymevoy usuario | nombre usuario == "Luciano" = (cierrecuenta 0 . upgrade . deposito 15) (billetera usuario)
-                   | otherwise = id billetera usuario
+tocoYmeVoy :: Evento
+tocoYmeVoy = (cierrecuenta. upgrade . (deposito 15))
 
-
-ahorranteerrante usuario | nombre usuario == "Luciano" = (deposito 10 . upgrade . deposito 8 . extraccion 1 . deposito 2 . deposito 1) (billetera usuario)
-                         | otherwise= id billetera usuario
+ahorranteErrante :: Evento
+ahorranteErrante = ((deposito 10) . upgrade . (deposito 8) . (extraccion 1) . (deposito 2) . (deposito 1))
 
 
 transaccion3 :: TransacciondePrueba
