@@ -62,7 +62,12 @@ quienMiraQue(Nombre2, Serie),
 paso(Serie, _, _, Spoiler),
 leDijo(Nombre1, Nombre2, Serie, Spoiler).
 
+leSpoileo(Nombre1, Nombre2, Serie):-
+quienPlaneaVerQue(Nombre2, Serie),
+paso(Serie, _, _, Spoiler),
+leDijo(Nombre1, Nombre2, Serie, Spoiler).
+
 %PUNTO 5 NO FUNCA:
 
 televidenteResponsable(Televidente):-
-not(leSpoileo (Televidente, _, _)).
+quienMiraQue(Televidente, _), not(leSpoileo(Televidente, _, _)).
