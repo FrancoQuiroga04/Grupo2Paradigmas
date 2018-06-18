@@ -34,6 +34,9 @@ paso(himym, 1, 1, relacion(amorosa, ted, robin)).
 paso(himym, 4, 3, relacion(amorosa, swarley, robin)).
 paso(got, 4, 5, relacion(amistad, tyrion, dragon)).
 
+
+
+
 %leDijo/4
 leDijo(gaston, maiu, got, relacion(amistad, tyrion, dragon)).
 leDijo(nico, maiu, starWars, relacion(parentesco, vader, luke)).
@@ -54,20 +57,51 @@ esSpoiler(himym, relacion(amorosa, swarley, robin)).
 esSpoiler(himym, relacion(amorosa, ted, robin)).
 esSpoiler(got, relacion(amistad, tyrion, dragon)).
 
+:- begin_tests(spoilers).
+
+test(muerte_de_emperor_es_spoiler, nondet) :-
+esSpoiler(starWars, muerte(emperor)).
 
 %PUNTO 4:
 
 leSpoileo(Nombre1, Nombre2, Serie):-
+quienMiraQue(Nombre1, Serie),
 quienMiraQue(Nombre2, Serie),
 paso(Serie, _, _, Spoiler),
 leDijo(Nombre1, Nombre2, Serie, Spoiler).
 
 leSpoileo(Nombre1, Nombre2, Serie):-
+quienMiraQue(Nombre1, Serie),
 quienPlaneaVerQue(Nombre2, Serie),
 paso(Serie, _, _, Spoiler),
 leDijo(Nombre1, Nombre2, Serie, Spoiler).
 
-%PUNTO 5 NO FUNCA:
+:- begin_tests(spoilear).
+
+test(alguien_le_spoileo_a_alguien_mas,
+[true(Serie == got), nondet]) :-
+leSpoileo(gaston, maiu, Serie).
+
+:- end_tests(spoilear).
+
+
+%PUNTO 5:
 
 televidenteResponsable(Televidente):-
 quienMiraQue(Televidente, _), not(leSpoileo(Televidente, _, _)).
+
+%PUNTO 6:
+
+vieneZafando(Alguien, Serie):-
+quienMiraQue(Alguien, Serie),
+not(leSpoileo(_, Alguien, Serie)).
+
+vieneZafando(Alguien, Serie):-
+quienPlaneaVerQue(Alguien, Serie),
+not(leSpoileo(_, Alguien, Serie)).
+
+:- begin_tests(zafando).
+test(viene_zafando_de,
+set(Serie == [futurama,got,himym,hoc])) :-
+vieneZafando(juan, Serie).
+:- end_tests(zafando).
