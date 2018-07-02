@@ -1,14 +1,15 @@
 %PUNTO 1:
 %No sé si se pueden usar listas en la parte de series para cada persona, quedaría mucho mejor.
-quienMiraQue(juan, himym).
-quienMiraQue(juan, got).
-quienMiraQue(juan, futurama).
-quienMiraQue(nico, starWars).
-quienMiraQue(nico, got).
-quienMiraQue(maiu, starWars).
-quienMiraQue(maiu, onePiece).
-quienMiraQue(maiu, got).
-quienMiraQue(gaston, got).
+miraSerie(juan, himym).
+miraSerie(juan, got).
+miraSerie(juan, futurama).
+miraSerie(nico, starWars).
+miraSerie(nico, got).
+miraSerie(maiu, starWars).
+miraSerie(maiu, onePiece).
+miraSerie(maiu, got).
+miraSerie(gaston, got).
+miraSerie(pedro, got).
 %Alf no ve ninguna serie. Por principio de universo cerrado, asumimos que es falso y directamente no modelamos el hecho de que no mire nada.
 %Tampoco decimos que nadie ve Mad Men por la misma razón que no formulamos el hecho de que Alf no mira ninguna serie.
 
@@ -26,6 +27,7 @@ cuantosEpisodiosTieneTalTemporada(drHouse, 16, 8).
 %PUNTO 2:
 %paso(Serie, Temporada, Episodio, Lo que paso)
 
+
 paso(futurama, 2, 3, muerte(seymourDiera)).
 paso(starWars, 10, 9, muerte(emperor)).
 paso(starWars, 1, 2, relacion(parentesco, anakin, rey)).
@@ -33,8 +35,10 @@ paso(starWars, 3, 2, relacion(parentesco, vader, luke)).
 paso(himym, 1, 1, relacion(amorosa, ted, robin)).
 paso(himym, 4, 3, relacion(amorosa, swarley, robin)).
 paso(got, 4, 5, relacion(amistad, tyrion, dragon)).
-
-
+paso(got, 3, 2, plotTwist(palabras, suenio, sinPiernas)).
+paso(got, 3, 12, plotTwist(palabras, fuego, boda)).
+%como que y sin piernas, cual es la aridad
+paso(doctorHouse, 8, 7, plotTwist(palabras, coma, pastillas)).
 
 
 %leDijo/4
@@ -44,64 +48,93 @@ leDijo(nico, juan, got, muerte(tyrion)).
 leDijo(aye, juan, got, relacion(amistad, tyrion, john)).
 leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
+leDijo(nico, juan, got, muerte(seymourDiera)).
+leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
+leDijo(pedro, nico, got, relacion(parentesco, tyrion, dragon)).
+
 
 %PUNTO 3:
 
 %esSpoiler (Serie, Lo que pasó en esa serie).
 
-esSpoiler(starWars, muerte(emperor)).
-esSpoiler(starWars, relacion(parentesco, anakin, rey)).
-esSpoiler(starWars, relacion(parentesco, vader, luke)).
-esSpoiler(futurama, muerte(seymourDiera)).
-esSpoiler(himym, relacion(amorosa, swarley, robin)).
-esSpoiler(himym, relacion(amorosa, ted, robin)).
-esSpoiler(got, relacion(amistad, tyrion, dragon)).
+%Ya saben todo lo que pasó realmente, no vuelvan a escribirlo para saber si algo es spoiler.
+%Replanteen esSpoiler sin repetir ningún suceso.
+
+esSpoiler(Serie, Suceso):-
+paso(Serie, _, _, Suceso).
 
 :- begin_tests(spoilers).
 
-test(muerte_de_emperor_es_spoiler, nondet) :-
+test(muerte_de_emperor_es_spoiler_para_star_wars, nondet) :-
 esSpoiler(starWars, muerte(emperor)).
+test(muerte_de_pedro_no_es_spoiler_para_star_wars, nondet):-
+not(esSpoiler(starWars, muerte(pedro))).
+test(parentesco_entre_anakin_y_el_rey_es_spoiler_para_star_wars, nondet):-
+esSpoiler(starWars, relacion(parentesco, anakin, rey)).
+test(parentesco_entre_anakin_y_Lavezzi_no_es_spoiler_para_star_wars, nondet):-
+not(esSpoiler(starWars, relacion(parentesco, anakin, lavezzi))).
+
+:- end_tests(spoilers).
 
 %PUNTO 4:
 
 leSpoileo(Nombre1, Nombre2, Serie):-
-quienMiraQue(Nombre1, Serie),
-quienMiraQue(Nombre2, Serie),
-paso(Serie, _, _, Spoiler),
+conoceSerie(Nombre2, Serie),
+esSpoiler(Serie, Spoiler),
 leDijo(Nombre1, Nombre2, Serie, Spoiler).
 
-leSpoileo(Nombre1, Nombre2, Serie):-
-quienMiraQue(Nombre1, Serie),
-quienPlaneaVerQue(Nombre2, Serie),
-paso(Serie, _, _, Spoiler),
-leDijo(Nombre1, Nombre2, Serie, Spoiler).
+conoceSerie(Nombre, Serie):- quienPlaneaVerQue(Nombre, Serie).
+conoceSerie(Nombre, Serie):- miraSerie(Nombre, Serie).
+
 
 :- begin_tests(spoilear).
 
-test(alguien_le_spoileo_a_alguien_mas,
-[true(Serie == got), nondet]) :-
+test(alguien_le_spoileo_a_alguien_mas,[true(Serie == got), nondet]) :-
 leSpoileo(gaston, maiu, Serie).
+test(alguien_le_spoileo_a_alguien_mas,[true(Serie == starWars), nondet]) :-
+leSpoileo(nico, maiu, Serie).
 
 :- end_tests(spoilear).
 
 
 %PUNTO 5:
 
-televidenteResponsable(Televidente):-
-quienMiraQue(Televidente, _), not(leSpoileo(Televidente, _, _)).
+televidenteResponsable(Televidente):- persona(Televidente), not(leSpoileo(Televidente, _, _)).
+
+persona(Persona) :- conoceSerie(Persona, _).
+
+:- begin_tests(responsables).
+
+test(alguien_es_televidente_responsable, set(Televidente == [juan, aye, maiu])) :-
+televidenteResponsable(Televidente).
+
+:- end_tests(responsables).
 
 %PUNTO 6:
 
 vieneZafando(Alguien, Serie):-
-quienMiraQue(Alguien, Serie),
-not(leSpoileo(_, Alguien, Serie)).
-
-vieneZafando(Alguien, Serie):-
-quienPlaneaVerQue(Alguien, Serie),
+conoceSerie(Alguien, Serie),
 not(leSpoileo(_, Alguien, Serie)).
 
 :- begin_tests(zafando).
+
 test(viene_zafando_de,
 set(Serie == [futurama,got,himym,hoc])) :-
 vieneZafando(juan, Serie).
+test(viene_zafando_de, set(PersonaZafante == [nico])):-
+vieneZafando(PersonaZafante, starWars).
+test(viene_zafando_de, set(Serie == [onePiece])):-
+vieneZafando(maiu, Serie).
+
 :- end_tests(zafando).
+
+
+%%%%PARTE 2
+%PUNTO 1
+%%%%para aplicar algo a una lista, no habria que usar map o algo parecido
+
+
+malaGente(Persona):- findall(Alguien, (leDijo(Persona, Alguien, _, _), leSpoileo(Persona, Alguien, _)), PersonasConQueHablo).
+
+
+%PUNTO 2
