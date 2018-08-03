@@ -45,10 +45,7 @@ leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
 leDijo(nico, juan, got, muerte(seymourDiera)).
 leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
 leDijo(pedro, nico, got, relacion(parentesco, tyrion, dragon)).
- amigo(nico, maiu).
-amigo(maiu, gaston).
-amigo(maiu, juan).
-amigo(juan, aye).
+
  %PUNTO 3:
  %esSpoiler (Serie, Lo que pasó en esa serie).
  %Ya saben todo lo que pasó realmente, no vuelvan a escribirlo para saber si algo es spoiler.
@@ -90,10 +87,6 @@ leSpoileo(nico, maiu, Serie).
 televidenteResponsable(Televidente).
  :- end_tests(responsables).
 
-esPopular(got).
-esPopular(hoc).
-esPopular(himym).
-
  %PUNTO 6:
 
 vieneZafando(Alguien, Serie):-
@@ -105,7 +98,7 @@ not(leSpoileo(_, Alguien, Serie)).
 esPopularOPasaronCosasFuertes(Serie):- esPopular(Serie).
 esPopularOPasaronCosasFuertes(Serie):-
 paso(Serie, _, _, unSuceso),
-hechoFuerte(unSuceso).
+hechoFuerte(Serie, unSuceso).
 
  :- begin_tests(zafando).
  test(viene_zafando_de,
@@ -131,44 +124,73 @@ conoceONoConoce(Persona, Serie):- not(conoceSerie(Persona, Serie)).
 
  %PUNTO 2
 
- hechoFuerte(relacion(amorosa, _, _)).
- hechoFuerte(muerte(_)).
- hechoFuerte(relacion(parentesco, _, _)).
+ hechoFuerte(Serie, relacion(amorosa, _, _)):-
+ paso(Serie, _, _, relacion(amorosa, _, _)).
+ hechoFuerte(Serie, muerte(_)):-
+ paso(Serie, _, _, muerte(_)).
+ hechoFuerte(Serie, relacion(parentesco, _, _)):-
+ paso(Serie, _, _, relacion(parentesco, _, _)).
+ hechoFuerte(Serie, plotTwist(ListaDePalabras)):-
+ not(esCliche(Serie, plotTwist(ListaDePalabras))),
+ finalDeTemporada(Serie, plotTwist(ListaDePalabras)).
 
-hechoFuerte(plotTwist(ListaDePalabras)):-
+ finalDeTemporada(Serie, Suceso):-
+cuantosEpisodiosTieneTalTemporada(Serie, Cantidad, _),
+paso(Serie, _, Cantidad, Suceso).
+
+
+esCliche(Serie, plotTwist(ListaDePalabras)):-
 paso(Serie, _, _, plotTwist(ListaDePalabras)),
 paso(OtraSerie, _, _, plotTwist(OtraListaDePalabras)),
 Serie \= OtraSerie,
-member(ListaDePalabras, OtraListaDePalabras).
+forall( member(Palabra, ListaDePalabras), member(Palabra, OtraListaDePalabras)).
+
 
 esFuerte(Serie, Suceso):-
-conoceSerie(_, Serie),
+generacionDeSeries(Serie),
 paso(Serie, _, _, Suceso),
-hechoFuerte(Suceso).
+hechoFuerte(Serie, Suceso).
 
-
- %??
  %PUNTO 3
- cuantosMiran(Serie):-
- esPopular(hoc).
-esPopular(Serie):- popularidad(starWars,PuntosDePopularidad),
-popularidad(Serie,PuntosDePopularidad2),
-PuntosDePopularidad >= PuntosDePopularidad2.
- popularidad(Serie, PuntosDePopularidad):- cuantosMiranLaSerie(Serie, Cantidad),
-cuantosHablanDeLaSerie(Serie, Cantidad2),
-PuntosDePopularidad is Cantidad * Cantidad2.
- cuantosMiranLaSerie(Serie, Cantidad):-findall(Alguien, (miraSerie(Alguien, Serie)), MiranSerie),
-length(MiranSerie, Cantidad).
- cuantosHablanDeLaSerie(Serie, CantidadTotal):-
-findall(Alguien, (leDijo(Alguien, _, Serie, _)), HablanDeLaSerie),
-findall(OtraPersona, (leDijo(_, OtraPersona, Serie, _)), LeCuentanDeLaSerie),
-length(HablanDeLaSerie, Cantidad),
-length(LeCuentanDeLaSerie, Cantidad2),
-CantidadTotal is Cantidad + Cantidad2.
+
+ esPopular(Serie):-
+generacionDeSeries(Serie),
+ popularidad(starWars,PuntosDePopularidad), popularidad(Serie,PuntosDePopularidad2),
+ PuntosDePopularidad >= PuntosDePopularidad2.
+
+ popularidad(Serie, PuntosDePopularidad):-
+ cuantosMiranLaSerie(Serie, Cantidad),
+ cuantosHablanDeLaSerie(Serie, Cantidad2),
+ PuntosDePopularidad is Cantidad * Cantidad2.
+
+ cuantosMiranLaSerie(Serie, Cantidad):-
+ generacionDeSeries(Serie),
+ findall(Alguien, (miraSerie(Alguien, Serie)), MiranSerie),
+ length(MiranSerie, Cantidad).
+
+ cuantosHablanDeLaSerie(Serie, Cantidad):-
+ findall(Alguien, (leDijo(Alguien, _, Serie, _)), HablanDeLaSerie),
+ length(HablanDeLaSerie, Cantidad).
+
+ generacionDeSeries(Serie):-
+ quienPlaneaVerQue(_,Serie).
+
+ generacionDeSeries(Serie):-
+ miraSerie(_,Serie).
+
+ generacionDeSeries(Serie):-
+ paso(Serie,_,_,_).
 
  %PUNTO 4
 
+amigo(nico, maiu).
+amigo(maiu, gaston).
+amigo(maiu, juan).
+amigo(juan, aye).
+
+
 fullSpoil(Persona1, Persona2):- leSpoileo(Persona1, Persona2, _).
+
 fullSpoil(Persona1, Persona2):-
-findall(Alguien, amigo(Persona2, Alguien), listadeAmigos),
-forall(fullSpoil(Persona1, listadeAmigos), listadeAmigos).
+findall(Amigos, amigo(Persona2, Amigos), AmigosPersona2),
+forall(member(Amigo, AmigosPersona2), leSpoileo(Persona1, Amigo, _)).
