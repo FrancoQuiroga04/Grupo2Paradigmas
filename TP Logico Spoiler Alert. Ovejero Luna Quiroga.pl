@@ -53,6 +53,8 @@ leDijo(nico, juan, got, muerte(seymourDiera)).
 leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
 leDijo(pedro, nico, got, relacion(parentesco, tyrion, dragon)).
 
+%sobre la base de conocimientos se pueden hacer consultas que satisfagan relacion entre todos los argumentos del predicado, tambien conocer todos los individuos que satisfacen una relacion
+
 %PUNTO 3:
 
 ocurrioSuceso(Serie, Suceso):-
@@ -134,8 +136,7 @@ esPopularOPasaronCosasFuertes(Serie):-
 esPopular(Serie).
 
 esPopularOPasaronCosasFuertes(Serie):-
-fuerte(Serie),
-cuantosEpisodiosTieneTalTemporada(Serie, _, _).
+fuerte(Serie).
 
 fuerte(Serie):-
 	forall(paso(Serie, _, _, unSuceso), hechoFuerte(Serie, unSuceso)).
