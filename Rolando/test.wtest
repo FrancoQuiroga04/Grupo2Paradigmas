@@ -1,0 +1,42 @@
+import rolando.*
+import hechizo.*
+
+describe "cristiano rolando" { // Con esto, agrupamos los tests
+
+test "Eclipse"{
+	rolando.eclipse() 
+	assert.equals(rolando.nivelHechiceria(), 61)
+}
+
+test "Nivel de hechiceria de rolando"{
+		assert.equals(rolando.nivelHechiceria(), 56)
+}
+
+test "Cambiar nombre"{
+	espectroMalefico.cambiarNombre("espectro superrecontramalefico muajajaja") 
+	assert.equals(rolando.nivelHechiceria(), 125)
+}
+
+test "Cambiar a basico"{
+	rolando.cambiaTuHechizoPreferido(hechizoBasico)
+	assert.equals(rolando.nivelHechiceria(), 35)
+}
+
+test "Es poderoso el hechizo malefico"{
+		rolando.cambiaTuHechizoPreferido(espectroMalefico)
+		assert.that(rolando.seCreePoderoso())
+}
+
+test "Es poderoso el hechizo pepe"{
+		espectroMalefico.cambiarNombre("pepe")
+		assert.notThat(rolando.seCreePoderoso())
+}
+
+test "Es poderoso el hechizo basico"{
+	rolando.cambiaTuHechizoPreferido(hechizoBasico)
+	assert.equals(rolando.nivelHechiceria(), 35)
+}
+}
+
+
+

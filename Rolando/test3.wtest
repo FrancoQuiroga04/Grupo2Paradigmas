@@ -1,0 +1,70 @@
+import rolando.*
+import hechizo.*
+import artefactos.*
+import armadura.*
+
+describe "cristiano rolando" { // Con esto, agrupamos los tests
+
+fixture {
+	rolando.agregarArtefactos([espadaDelDestino, collarDivino, mascaraOscura, espejo, armadura]) 
+}
+
+
+test "Rolando esta cargado"{
+	assert.that(rolando.estaCargado()) 
+}
+
+test "Rolando se saca la armadura"{
+	rolando.quitarUnArtefacto(armadura)
+	assert.notThat(rolando.estaCargado()) 
+}
+
+test "Habilidad de lucha de Rolando"{
+	assert.equals(rolando.habilidadLucha(), 20)
+}
+
+test "Habilidad de lucha para la armadura de Rolando con bendicion como refuerzo"{
+	armadura.agregarRefuerzo(bendicion)
+	
+	assert.equals(armadura.sumaHabilidad(), 58)
+}
+
+test "Habilidad de lucha para la armadura de Rolando con cota de malla como refuerzo"{
+	armadura.agregarRefuerzo(cotaDeMalla)
+	
+	assert.equals(armadura.sumaHabilidad(), 3)
+}
+
+test "Habilidad de lucha para la armadura de Rolando con hechizo basico como refuerzo"{
+	hechizoRefuerzo.agregarHechizo(hechizoBasico)
+	armadura.agregarRefuerzo(hechizoRefuerzo)
+	
+	assert.equals(armadura.sumaHabilidad(), 12)
+}
+
+test "Habilidad de lucha para la armadura de Rolando con hechizo espectro malefico como refuerzo"{
+	hechizoRefuerzo.agregarHechizo(espectroMalefico)
+	armadura.agregarRefuerzo(hechizoRefuerzo)
+	
+	assert.equals(armadura.sumaHabilidad(), 19)
+}
+
+test "Eliminar todos los artefactos de Rolando, incorporar el espejo y conocer la habilidad"{
+	rolando.eliminarArtefactos()
+	rolando.agregarArtefactos(espejo)
+
+	assert.equals(rolando.habilidadLucha(), 1)
+}
+
+test "Reemplazaar al hechizo preferido por un libro de hechizos que contiene el espectro malefico con el mismo nombre y al hechizo basico, y conocer la habilidad"{
+{
+	libroDeHechizos.agregarHechizos([espectroMalefico, hechizoBasico])
+	rolando.cambiaTuHechizoPreferido(libroDeHechizos)
+	
+	assert.equals(rolando.habilidadLucha(), 56)
+	}
+	
+	}
+
+
+}

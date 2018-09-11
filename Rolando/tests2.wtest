@@ -1,0 +1,48 @@
+import rolando.*
+import hechizo.*
+import artefactos.*
+
+describe "cristiano rolando" { // Con esto, agrupamos los tests
+
+fixture {
+	rolando.agregarArtefactos([espadaDelDestino, collarDivino, mascaraOscura]) 
+}
+
+
+test "Eliminar artefactos de rolando"{
+	rolando.eliminarArtefactos() 
+	assert.equals(rolando.habilidadLucha(), 1)
+}
+
+test "Habilidad con todos los artefactos"{
+
+	assert.equals(rolando.habilidadLucha(), 13)
+}
+
+test "Cambiar la cantidad de perlas"{
+	collarDivino.cambiarCantidadDePerlas(3)
+	assert.equals(rolando.habilidadLucha(), 11)
+}
+
+test "Cambiar el valor base"{
+	rolando.cambiarValorBase(8)
+	assert.equals(rolando.habilidadLucha(), 20)
+}
+
+test "Causar eclipse"{
+	rolando.eclipse()
+	assert.equals(mascaraOscura.sumaHabilidad(), 5)
+}
+
+test "Eliminar mascara oscura"{
+	rolando.quitarUnArtefacto(mascaraOscura)	
+	assert.equals(rolando.habilidadLucha(), 9)
+}
+
+
+
+
+}
+
+
+
