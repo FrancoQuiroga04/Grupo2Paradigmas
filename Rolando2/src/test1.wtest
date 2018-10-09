@@ -1,0 +1,50 @@
+import personaje.*
+import hechizo.*
+
+describe "Tests del punto 1" { 
+
+
+	const rolando = new Personaje()
+	const espectroMalefico = new HechizoDeLogos()
+	const hechizoBasico = new HechizoBasico()
+	
+
+fixture {
+	espectroMalefico.nombre('Espectro Malefico')
+	rolando.hechizoPreferido(espectroMalefico)
+}
+
+test "Eclipse"{
+	fuerzaOscura.provocaUnEclipse() 
+	assert.equals(rolando.valorDeHechiceria(), 61)
+}
+
+test "Nivel de hechiceria de rolando"{
+		assert.equals(rolando.valorDeHechiceria(), 56)
+}
+
+test "Cambiar nombre"{
+	espectroMalefico.nombre('espectro superrecontramalefico muajajaja') 
+	assert.equals(rolando.valorDeHechiceria(), 125)
+}
+
+test "Cambiar a basico"{
+	rolando.hechizoPreferido(hechizoBasico)
+	assert.equals(rolando.valorDeHechiceria(), 35)
+}
+
+test "Es poderoso el hechizo malefico"{
+		rolando.hechizoPreferido(espectroMalefico)
+		assert.that(rolando.seCreePoderoso())
+}
+
+test "Es poderoso el hechizo pepe"{
+		espectroMalefico.nombre('pepe')
+		assert.notThat(rolando.seCreePoderoso())
+}
+
+test "Es poderoso el hechizo basico"{
+	rolando.hechizoPreferido(hechizoBasico)
+	assert.equals(rolando.valorDeHechiceria(), 35)
+}
+}

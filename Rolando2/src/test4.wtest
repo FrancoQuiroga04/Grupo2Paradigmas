@@ -1,0 +1,81 @@
+import personaje.*
+import hechizo.*
+import artefactos.*
+import armadura.*
+
+describe "Tests del punto 4" {
+
+	const unaEspada = new Arma()
+	const hechizoDeLogos = new HechizoDeLogos(nombre = "alacachula cachicomula")
+
+	const hechizoBasico = new HechizoBasico()
+	const armadura = new Armadura()
+	const xenia = new Personaje(hechizoPreferido = hechizoDeLogos)
+	const thor = new Personaje(hechizoPreferido = hechizoBasico)
+	const loki = new Personaje(hechizoPreferido = hechizoBasico, monedas = 5)
+
+	test "Si le pido al hechizoDeLogos definido su precio en monedas, me va a decir 22." {
+		assert.equals(22, hechizoDeLogos.precioEnMonedas())
+	}
+
+	test "Si xenia canjea su hechizo por el hechizoBasico y le pregunto cuántas son sus monedas, me va a decir 100." {
+		xenia.canjeaTuHechizo(hechizoBasico)
+		assert.equals(100, xenia.monedas())
+	}
+
+	test "Si thor canjea su hechizo por el hechizoDeLogos previamente definido y le pregunto cuántas son sus monedas, me va a decir 83." {
+		thor.canjeaTuHechizo(hechizoDeLogos)
+		assert.equals(83, thor.monedas())
+	}
+
+	test "Si thor canjea dos veces su hechizo por el mismo hechizoBasico, y le pregunto cuántas son sus monedas, me va a decir 90." {
+		thor.canjeaTuHechizo(hechizoBasico)
+		thor.canjeaTuHechizo(hechizoBasico)
+		assert.equals(90, thor.monedas())
+	}
+
+	test "Si loki quiere canjear su hechizo por el hechizoDeLogos, no va a poder y su hechizoPreferido seguirá siendo el mismo." {
+		loki.canjeaTuHechizo(hechizoDeLogos)
+		assert.equals(hechizoBasico, loki.hechizoPreferido())
+	}
+
+	test "Si xenia se compra un collarDivino (de 5 perlas), una espada, una armadura sin refuerzo y otra con una cota de malla (con valor de lucha de 5) como refuerzo, y luego le pido la cantidad de monedas que tiene, me va a decir 70,5." {
+		armadura.refuerzo(new CotaDeMalla(decimeTuPoder = 5, armaduraCorrespondiente = armadura))
+		xenia.comprateUnArtefacto(armadura)
+		xenia.comprateUnArtefacto(unaEspada)
+		xenia.comprateUnArtefacto(collarDivino)
+		armadura.refuerzo(null)
+		xenia.comprateUnArtefacto(armadura)
+		assert.equals(4, xenia.artefactos().size())
+	}
+
+	test "Si xenia se compra un collarDivino (de 5 perlas), una espada, una armadura sin refuerzo y otra con una cota de malla (con valor de lucha de 5) como refuerzo, y luego le pido su cantidad de artefactos, me va a decir 4." {
+		armadura.refuerzo(new CotaDeMalla(decimeTuPoder = 5, armaduraCorrespondiente = armadura))
+		xenia.comprateUnArtefacto(armadura)
+		xenia.comprateUnArtefacto(unaEspada)
+		xenia.comprateUnArtefacto(collarDivino)
+		armadura.refuerzo(null)
+		xenia.comprateUnArtefacto(armadura)
+		assert.equals(4, xenia.artefactos().length())
+	}
+
+	test "Si thor se compra una armadura con bendición como refuerzo, y una armadura con el hechizoDeLogos como refuerzo, y luego le pido que me diga sus monedas, me va a decir 74." {
+		armadura.refuerzo(new Bendicion())
+		thor.comprateUnArtefacto(armadura)
+		armadura.refuerzo(hechizoDeLogos)
+		thor.comprateUnArtefacto(armadura)
+		assert.equals(74, thor.monedas())
+	}
+
+	test "Si loki quiere comprar un espejo, no va a poder y su lista de artefactos seguirá vacía." {
+		loki.comprateUnArtefacto(new Espejo())
+		assert.equals([], loki.artefactos())
+	}
+
+	test "Si Xenia canjea su hechizo por un libro de hechizos que contiene el hechizoDeLogos y al hechizoBasico, y luego le pido la cantidad de monedas que posee, me va a decir 69." {
+		libroDeHechizos.hechizos([ hechizoDeLogos, hechizoBasico ])
+		xenia.canjeaTuHechizo(libroDeHechizos)
+		assert.equals(69, xenia.monedas())
+	}
+
+}

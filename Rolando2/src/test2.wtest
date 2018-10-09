@@ -1,0 +1,47 @@
+import personaje.*
+import hechizo.*
+import artefactos.*
+
+describe "Test del punto 2" {
+
+const rolando = new Personaje()
+const espadaDelDestino = new Arma()
+const espectroMalefico = new HechizoDeLogos()
+const hechizoBasico = new HechizoBasico()
+
+
+fixture {
+	espectroMalefico.nombre('Espectro Malefico')
+	rolando.hechizoPreferido(espectroMalefico)
+	rolando.agregateVariosArtefactos([espadaDelDestino, collarDivino, mascaraOscura]) 
+	
+}	
+
+test "Eliminar artefactos de rolando"{
+	rolando.eliminarArtefactos() 
+	assert.equals(rolando.decimeTuHabilidadParaLucha(), 1)
+}
+
+test "Habilidad con todos los artefactos"{
+	assert.equals(rolando.decimeTuHabilidadParaLucha(), 13)
+}
+
+test "Cambiar la cantidad de perlas"{
+	collarDivino.cantidadDePerlas(3)
+	assert.equals(rolando.decimeTuHabilidadParaLucha(), 11)
+}
+
+test "Cambiar el valor base"{
+	rolando.valorBaseDeLucha(8)
+	assert.equals(rolando.decimeTuHabilidadParaLucha(), 20)
+}
+
+test "Causar eclipse"{
+	fuerzaOscura.provocaUnEclipse()
+	assert.equals(mascaraOscura.decimeTuPoder(), 5)
+}
+
+test "Eliminar mascara oscura"{
+	rolando.quitarUnArtefacto(mascaraOscura)	
+	assert.equals(rolando.decimeTuHabilidadParaLucha(), 9)
+}}
