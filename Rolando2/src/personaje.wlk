@@ -8,6 +8,7 @@ class Personaje {
 	var property hechizoPreferido
 	var property valorBaseDeLucha = 1
 	var property monedas = 100
+	var property capacidadDeCarga 
 	var artefactos = []
 
 	method quitarUnArtefacto(unArtefacto) {
@@ -19,18 +20,23 @@ class Personaje {
 	}
 
 	method agregateUnArtefacto(unArtefacto) {
+		self.lanzaExcepcionSi(self.excedeLaCapacidadTotalCon(unArtefacto), "Excede la capacidad total")
 		artefactos.add(unArtefacto)
 	}
+	
+	method excedeLaCapacidadTotalCon(unArtefactoMas) = (self.cuantoEstasCargando() + unArtefactoMas.pesoTotal(self)) >= self.capacidadDeCarga()
+	
+	method cuantoEstasCargando() = self.artefactos().sum({artefacto => artefacto.pesoTotal(self)})
 
 	method eliminarArtefactos() = artefactos.clear()
 
 	method artefactos() = artefactos
 
-	method valorDeHechiceria() = (valorBaseDeHechiceria * hechizoPreferido.decimeTuPoder()) + fuerzaOscura.valor()
+	method valorDeHechiceria() = (valorBaseDeHechiceria * hechizoPreferido.decimeTuPoder(self)) + fuerzaOscura.valor()
 
-	method seCreePoderoso() = hechizoPreferido.esPoderoso()
+	method seCreePoderoso() = hechizoPreferido.esPoderoso(self)
 
-	method decimeTuHabilidadParaLucha() = self.artefactos().sum({ artefacto => artefacto.decimeTuPoder() }) + self.valorBaseDeLucha()
+	method decimeTuHabilidadParaLucha() = self.artefactos().sum({ artefacto => artefacto.decimeTuPoder(self) }) + self.valorBaseDeLucha()
 
 	method tieneMasHabilidadQueNivelDeHechiceria() = self.decimeTuHabilidadParaLucha() > self.valorDeHechiceria()
 
@@ -42,22 +48,41 @@ class Personaje {
 		monedas += 10
 	}
 
-	method comprateUnArtefacto(artefacto) {
-		if (self.monedas() >= artefacto.precioEnMonedas()) {
-			self.agregateUnArtefacto(artefacto)
-			self.monedas(self.monedas() - artefacto.precioEnMonedas())
+	method comprar(unProducto, aUnComerciante){
+		self.lanzaExcepcionSi(self.teAlcanzaParaComprar(unProducto).negate(), "No alcanza la plata para comprar producto")	
+		unProducto.adquiridoPor(self, aUnComerciante, self.averiguarPrecioDelProducto(unProducto))
+	}
+		
+	method averiguarPrecioDelProducto(unProducto) =  unProducto.cualEsElTotalPara(self)
+	
+	method teAlcanzaParaComprar(unProducto) = self.monedas() > self.averiguarPrecioDelProducto(unProducto)
+	
+	method lanzaExcepcionSi(condicion, descripcion){
+		if (descripcion == "No alcanza la plata para comprar producto"){
+			throw new NoSePuedeComprarError(descripcion)
+		}else{
+			if (descripcion == "Excede la capacidad total"){
+				throw new ExcedeCapacidadError(descripcion)
+			}
 		}
 	}
+}
 
-	method canjeaTuHechizo(hechizoNuevo) {
-		if (self.hechizoPreferido().precioEnMonedas() / 2 >= hechizoNuevo.precioEnMonedas()) {
-			self.hechizoPreferido(hechizoNuevo)
-		} else if (self.monedas() + ( self.hechizoPreferido().precioEnMonedas() / 2 ) >= hechizoNuevo.precioEnMonedas()) {
-			self.monedas(self.monedas() - ( hechizoNuevo.precioEnMonedas() - self.hechizoPreferido().precioEnMonedas() ))
-			self.hechizoPreferido(hechizoNuevo)
-		}
-	}
+class NPC inherits Personaje{
+	var property dificultad
+	override method decimeTuHabilidadParaLucha() = super() * self.dificultad().valorMultiplo()
+}
 
+object nivelFacil{
+	var property valorMultiplo = 1	
+}
+
+object nivelModerado{
+	var property valorMultiplo = 2	
+}
+
+object nivelDificil{
+	var property valorMultiplo = 4	
 }
 
 object fuerzaOscura {
@@ -69,3 +94,6 @@ object fuerzaOscura {
 	}
 
 }
+
+class NoSePuedeComprarError inherits Exception {}
+class ExcedeCapacidadError inherits Exception {}

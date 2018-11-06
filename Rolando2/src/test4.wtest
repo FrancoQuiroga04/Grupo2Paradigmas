@@ -2,79 +2,82 @@ import personaje.*
 import hechizo.*
 import artefactos.*
 import armadura.*
+import comerciante.*
 
 describe "Tests del punto 4" {
 
 	const unaEspada = new Arma()
 	const hechizoDeLogos = new HechizoDeLogos(nombre = "alacachula cachicomula")
-
 	const hechizoBasico = new HechizoBasico()
-	const armadura = new Armadura()
-	const xenia = new Personaje(hechizoPreferido = hechizoDeLogos)
-	const thor = new Personaje(hechizoPreferido = hechizoBasico)
-	const loki = new Personaje(hechizoPreferido = hechizoBasico, monedas = 5)
+	const armadura = new Armadura(peso = 0)
+	const xenia = new Personaje(hechizoPreferido = hechizoDeLogos, capacidadDeCarga = 200, monedas = 100)
+	const thor = new Personaje(hechizoPreferido = hechizoBasico, capacidadDeCarga = 200, monedas = 100)
+	const loki = new Personaje(hechizoPreferido = hechizoBasico, capacidadDeCarga = 200, monedas = 5)
+	const mockHnos = new Comerciante(nombre = "Mock Hnos")
+	const collarDivino = new CollarDivino(peso = 0)
+	const cotaDeMalla = new CotaDeMalla()
 
 	test "Si le pido al hechizoDeLogos definido su precio en monedas, me va a decir 22." {
-		assert.equals(22, hechizoDeLogos.precioEnMonedas())
+		assert.equals(22, hechizoDeLogos.precioEnMonedas(xenia))
 	}
 
 	test "Si xenia canjea su hechizo por el hechizoBasico y le pregunto cuántas son sus monedas, me va a decir 100." {
-		xenia.canjeaTuHechizo(hechizoBasico)
+		xenia.comprar(hechizoBasico, mockHnos)
 		assert.equals(100, xenia.monedas())
 	}
 
 	test "Si thor canjea su hechizo por el hechizoDeLogos previamente definido y le pregunto cuántas son sus monedas, me va a decir 83." {
-		thor.canjeaTuHechizo(hechizoDeLogos)
+		thor.comprar(hechizoDeLogos, mockHnos)
 		assert.equals(83, thor.monedas())
 	}
 
 	test "Si thor canjea dos veces su hechizo por el mismo hechizoBasico, y le pregunto cuántas son sus monedas, me va a decir 90." {
-		thor.canjeaTuHechizo(hechizoBasico)
-		thor.canjeaTuHechizo(hechizoBasico)
+		thor.comprar(hechizoBasico, mockHnos)
+		thor.comprar(hechizoBasico, mockHnos)
 		assert.equals(90, thor.monedas())
 	}
 
 	test "Si loki quiere canjear su hechizo por el hechizoDeLogos, no va a poder y su hechizoPreferido seguirá siendo el mismo." {
-		loki.canjeaTuHechizo(hechizoDeLogos)
+		loki.comprar(hechizoDeLogos, mockHnos)
 		assert.equals(hechizoBasico, loki.hechizoPreferido())
 	}
 
 	test "Si xenia se compra un collarDivino (de 5 perlas), una espada, una armadura sin refuerzo y otra con una cota de malla (con valor de lucha de 5) como refuerzo, y luego le pido la cantidad de monedas que tiene, me va a decir 70,5." {
-		armadura.refuerzo(new CotaDeMalla(decimeTuPoder = 5, armaduraCorrespondiente = armadura))
-		xenia.comprateUnArtefacto(armadura)
-		xenia.comprateUnArtefacto(unaEspada)
-		xenia.comprateUnArtefacto(collarDivino)
+		armadura.refuerzo(cotaDeMalla)
+		xenia.comprar(armadura, mockHnos)
+		xenia.comprar(unaEspada, mockHnos)
+		xenia.comprar(collarDivino, mockHnos)
 		armadura.refuerzo(null)
-		xenia.comprateUnArtefacto(armadura)
+		xenia.comprar(armadura, mockHnos)
 		assert.equals(4, xenia.artefactos().size())
 	}
 
 	test "Si xenia se compra un collarDivino (de 5 perlas), una espada, una armadura sin refuerzo y otra con una cota de malla (con valor de lucha de 5) como refuerzo, y luego le pido su cantidad de artefactos, me va a decir 4." {
-		armadura.refuerzo(new CotaDeMalla(decimeTuPoder = 5, armaduraCorrespondiente = armadura))
-		xenia.comprateUnArtefacto(armadura)
-		xenia.comprateUnArtefacto(unaEspada)
-		xenia.comprateUnArtefacto(collarDivino)
-		armadura.refuerzo(null)
-		xenia.comprateUnArtefacto(armadura)
+		armadura.refuerzo(new CotaDeMalla(poder = 5))
+		xenia.comprar(armadura, mockHnos)
+		xenia.comprar(unaEspada, mockHnos)
+		xenia.comprar(collarDivino, mockHnos)
+		armadura.refuerzo(ningunRefuerzo)
+		xenia.comprar(armadura, mockHnos)
 		assert.equals(4, xenia.artefactos().length())
 	}
 
 	test "Si thor se compra una armadura con bendición como refuerzo, y una armadura con el hechizoDeLogos como refuerzo, y luego le pido que me diga sus monedas, me va a decir 74." {
-		armadura.refuerzo(new Bendicion())
-		thor.comprateUnArtefacto(armadura)
-		armadura.refuerzo(hechizoDeLogos)
-		thor.comprateUnArtefacto(armadura)
+		armadura.refuerzo(new Bendicion(armadura = armadura))
+		thor.comprar(armadura, mockHnos)
+		armadura.refuerzo(hechizoDeLogos, mockHnos)
+		thor.comprar(armadura, mockHnos)
 		assert.equals(74, thor.monedas())
 	}
 
 	test "Si loki quiere comprar un espejo, no va a poder y su lista de artefactos seguirá vacía." {
-		loki.comprateUnArtefacto(new Espejo())
+		loki.comprar(new Espejo())
 		assert.equals([], loki.artefactos())
 	}
 
 	test "Si Xenia canjea su hechizo por un libro de hechizos que contiene el hechizoDeLogos y al hechizoBasico, y luego le pido la cantidad de monedas que posee, me va a decir 69." {
 		libroDeHechizos.hechizos([ hechizoDeLogos, hechizoBasico ])
-		xenia.canjeaTuHechizo(libroDeHechizos)
+		xenia.comprar(libroDeHechizos, mockHnos)
 		assert.equals(69, xenia.monedas())
 	}
 

@@ -1,54 +1,56 @@
 import personaje.*
 import hechizo.*
+import artefactos.*
 
-class Armadura {
+class Armadura inherits Artefacto{
 
 	var property refuerzo
-	var property duenio
+	var property valorBase = 5
 
-	method decimeTuPoder() = if (self.refuerzo() == null) {
+	method decimeTuPoder(duenio) = if (self.refuerzo() == null) {
 		return 0
 	} else {
-		return self.refuerzo().decimeTuPoder()
+		return self.refuerzo().decimeTuPoder(duenio)
 	}
 	
-	method precioEnMonedas() = if (self.refuerzo() == null) {
-		return 2
-	}else{
-		return self.refuerzo().precioEnMonedas()
-	}
+	override method precioEnMonedas(duenio) = self.refuerzo().precioEnMonedas()
+	override method pesoExtra(duenio) = self.refuerzo().pesoExtra(duenio)
+}
+
+object ningunRefuerzo inherits Artefacto{
+	
+	method decimeTuPoder(duenio) = 0
+	override method precioEnMonedas(duenio)= 2
+	override method pesoExtra(duenio) = 0
 
 }
 
-class Refuerzo {
+class CotaDeMalla inherits Artefacto  {
 
-	var property armaduraCorrespondiente
-	var property duenio
+	var property poder
+	method decimeTuPoder(duenio) = poder
 
-}
-
-class CotaDeMalla inherits Refuerzo {
-
-	var property decimeTuPoder
-	method precioEnMonedas() = self.decimeTuPoder() / 2
+	override method precioEnMonedas(duenio) = self.decimeTuPoder(duenio) / 2
+	override method pesoExtra(duenio) = 1
 
 }
 
-class Bendicion inherits Refuerzo {
-
-	method decimeTuPoder() = self.duenio().valorDeHechiceria()
-	method precioEnMonedas() = self.armaduraCorrespondiente().valorBase() 
+class Bendicion inherits Artefacto {
+	
+	var property armadura
+	method decimeTuPoder(duenio) = duenio.valorDeHechiceria()	
+	override method precioEnMonedas(duenio) = self.armadura().valorBase() 
+	override method pesoExtra(duenio) = 0
 
 }
 
-class Espejo inherits Refuerzo {
-
-	method decimeTuPoder() = if (self.duenio().artefactos() == [ self ]) {
+class Espejo inherits Artefacto {
+	
+	method decimeTuPoder(duenio) = if (duenio.artefactos() == [self]) {
 		return 0
 	} else {
-		self.duenio().artefactos().filter({ unArtefacto => unArtefacto != self}).map({ unArtefacto => unArtefacto.decimeTuPoder()}).max()
+		duenio.artefactos().filter({ unArtefacto => unArtefacto != self}).map({ unArtefacto => unArtefacto.decimeTuPoder(duenio)}).max()
 	}
-	
-	method precioEnMonedas() = 90
-
+	override method precioEnMonedas(duenio) = 90
+	override method pesoExtra(duenio) = 0
 }
