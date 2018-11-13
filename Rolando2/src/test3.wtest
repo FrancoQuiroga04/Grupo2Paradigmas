@@ -27,60 +27,60 @@ test "Rolando esta cargado"{
 	assert.that(rolando.decimeSiEstasCargado()) 
 }
 
-test "Conocer la habilidad para la lucha de navi"{
+test "Conocer la habilidad para la lucha de navi. Es de 1"{
 	assert.equals(navi.decimeTuHabilidadParaLucha(), 1) 
 }
 
-test "Conocer la habilidad para la lucha de Ashley Graham"{
+test "Conocer la habilidad para la lucha de Ashley Graham. Es de 18"{
 	assert.equals(ashleyGraham.decimeTuHabilidadParaLucha(), 18) 
 }
 
-test "Hacer que Ashley Graham tenga dificultad difícil. Conocer la habilidad para la lucha de Ashley Graham."{
+test "Hacer que Ashley Graham tenga dificultad difícil. Conocer la habilidad para la lucha de Ashley Graham. Sera de 36"{
 	ashleyGraham.dificultad(nivelDificil)
 	assert.equals(ashleyGraham.decimeTuHabilidadParaLucha(), 36) 
 }
 
-test "Rolando se saca la armadura"{
+test "Rolando se saca la armadura. No esta cargado"{
 	rolando.quitarUnArtefacto(armaduraSinRefuerzo)
 	assert.notThat(rolando.decimeSiEstasCargado()) 
 }
 
-test "Habilidad de lucha de Rolando"{
+test "Habilidad de lucha de Rolando. Es 20"{
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 20)
 }
 
-test "Habilidad de lucha para la armadura de Rolando con bendicion como refuerzo"{
+test "Habilidad de lucha para la armadura de Rolando con bendicion como refuerzo. Es 58"{
 	armaduraSinRefuerzo.refuerzo(bendicion)
 	
 	assert.equals(armaduraSinRefuerzo.decimeTuPoder(rolando), 58)
 }
 
-test "Habilidad de lucha para la armadura de Rolando con cota de malla como refuerzo"{
+test "Habilidad de lucha para la armadura de Rolando con cota de malla como refuerzo. Es 3"{
 	armaduraSinRefuerzo.refuerzo(cotaDeMalla)
 	
 	assert.equals(armaduraSinRefuerzo.decimeTuPoder(rolando), 3)
 }
 
-test "Habilidad de lucha para la armadura de Rolando con hechizo basico como refuerzo"{
+test "Habilidad de lucha para la armadura de Rolando con hechizo basico como refuerzo. Es 12"{
 	armaduraSinRefuerzo.refuerzo(hechizoBasico)
 	
 	assert.equals(armaduraSinRefuerzo.decimeTuPoder(rolando), 12)
 }
 
-test "Habilidad de lucha para la armadura de Rolando con hechizo espectro malefico como refuerzo"{
+test "Habilidad de lucha para la armadura de Rolando con hechizo espectro malefico como refuerzo. Es 19"{
 	armaduraSinRefuerzo.refuerzo(espectroMalefico)
 	
 	assert.equals(armaduraSinRefuerzo.decimeTuPoder(rolando), 19)
 }
 
-test "Eliminar todos los artefactos de Rolando, incorporar el espejo y conocer la habilidad"{
+test "Eliminar todos los artefactos de Rolando, incorporar el espejo y conocer la habilidad. Sera de 1"{
 	rolando.eliminarArtefactos()
 	rolando.agregateUnArtefacto(espejo)
 
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 1)
 }
 
-test "Reemplazaar al hechizo preferido por un libro de hechizos que contiene el espectro malefico con el mismo nombre y al hechizo basico, y conocer la habilidad"{
+test "Reemplazaar al hechizo preferido por un libro de hechizos que contiene el espectro malefico con el mismo nombre y al hechizo basico, y conocer la habilidad. Sera de 56"{
 {
 	libroDeHechizos.agregarHechizos([espectroMalefico, hechizoBasico])
 	rolando.cambiaTuHechizoPreferido(libroDeHechizos)

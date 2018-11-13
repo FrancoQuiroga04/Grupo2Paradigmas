@@ -30,87 +30,87 @@ fixture {
 	rolando.agregateVariosArtefactos([espadaDelDestino, collarDivino, mascaraOscura]) 
 }	
 
-test "Saber el peso de la espada nueva"{
+test "Saber el peso de la espada nueva. Es 4"{
 	assert.equals(espadaNueva.pesoConDesgaste(new Personaje()), 4)
 }
 
-test "Saber el peso de la espada comun"{
+test "Saber el peso de la espada comun. Es 4.95"{
 	assert.equals(espadaComun.pesoConDesgaste(new Personaje()), 4.95)
 }
 
-test "Saber el peso del collar divino"{
+test "Saber el peso del collar divino. Es 2.5"{
 	assert.equals(collarDivino.pesoTotal(new Personaje()), 2.5)
 }
 
-test "Saber el peso de la mascara oscura"{
+test "Saber el peso de la mascara oscura. Es 3"{
 	assert.equals(mascaraOscura.pesoTotal(new Personaje()), 3)
 }
 
-test "Hacer que ocurra un eclipse. Saber el peso de la máscara oscura."{
+test "Hacer que ocurra un eclipse. Saber el peso de la máscara oscura. Es 5"{
 	fuerzaOscura.provocaUnEclipse()
 	assert.equals(mascaraOscura.pesoTotal(new Personaje()), 5)
 }
 
-test "Saber el peso de la mascara clara"{
+test "Saber el peso de la mascara clara. Es 2"{
 	assert.equals(mascaraOscura.pesoTotal(new Personaje()), 2)
 }
 
-test "Saber cuál es el peso total de la armadura con cota de malla."{
+test "Saber cuál es el peso total de la armadura con cota de malla. Es 11"{
 	assert.equals(armaduraConCotaDeMalla.pesoTotal(new Personaje()), 11)
 }
 
-test "Saber cuál es el peso total de la armadura con hechizo par"{
+test "Saber cuál es el peso total de la armadura con hechizo par. Es 14"{
 	assert.equals(armaduraHechizoPar.pesoTotal(new Personaje()), 14)
 }
 
-test "Saber cuál es el peso total de la armadura con hechizo impar"{
+test "Saber cuál es el peso total de la armadura con hechizo impar. Es 13"{
 	assert.equals(armaduraHechizoImpar.pesoTotal(new Personaje()), 13)
 }
 
-test "Saber cuál es el peso total de la armadura sin refuerzo"{
+test "Saber cuál es el peso total de la armadura sin refuerzo. Es 12"{
 	assert.equals(armaduraSinRefuerzo.pesoTotal(new Personaje()), 12)
 }
 
-test "Merlín le compra a Mock Hnos. la máscara clara y la oscura (sin que haya eclipse). Saber cuál es el peso total que carga Merlin."{
+test "Merlín le compra a Mock Hnos. la máscara clara y la oscura (sin que haya eclipse). Saber cuál es el peso total que carga Merlin. Es 5"{
 	merlin.comprar(mascaraClara, mockHnos)
 	assert.equals(merlin.cuantoEstasCargando(), 5)
 }
 
-test "Merlín le quiere comprar a Mock Hnos. la armadura con hechizo par."{
+test "Merlín le quiere comprar a Mock Hnos. la armadura con hechizo par. Excedera la capacidad total"{
 	assert.throwsExceptionLike(new ExcedeCapacidadError("Excede la capacidad total"), {merlin.comprar(armaduraHechizoPar, mockHnos)})
 }
 
-test "Ursula carga con 14 kilos iniciales. Decide desprenderse de la armadura con cota de malla. Saber cuál es el peso total con el que carga Ursula ahora."{
+test "Ursula carga con 14 kilos iniciales. Decide desprenderse de la armadura con cota de malla. Saber cuál es el peso total con el que carga Ursula ahora. Sera de 3"{
 	ursula.quitarUnArtefacto(armaduraConCotaDeMalla)
 	assert.equals(ursula.cuantoEstasCargando(), 3)
 }
 
-test "Eliminar todos los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando."{
+test "Eliminar todos los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando. Sera 1"{
 	rolando.eliminarArtefactos() 
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 1)
 }
 
-test "Conocer la habilidad para la lucha de Rolando con todos los artefactos."{
+test "Conocer la habilidad para la lucha de Rolando con todos los artefactos. Es 13"{
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 13)
 }
 
-test "Cambiar la cantidad de perlas del collar divino a 3. Conocer la habilidad para la lucha de Rolando con todos los artefactos."{
+test "Cambiar la cantidad de perlas del collar divino a 3. Conocer la habilidad para la lucha de Rolando con todos los artefactos. Es de 11"{
 	collarDivino.cantidadDePerlas(3)
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 11)
 }
 
-test "Cambiar el valor base para la lucha de Rolando a 8. Conocer la habilidad para la lucha de Rolando con todos los artefactos."{
+test "Cambiar el valor base para la lucha de Rolando a 8. Conocer la habilidad para la lucha de Rolando con todos los artefactos. Es de 20"{
 	rolando.valorBaseDeLucha(8)
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 20)
 }
 
-test "Hacer que ocurra un eclipse. Preguntar por el valor de lucha de la máscara oscura."
+test "Hacer que ocurra un eclipse. Preguntar por el valor de lucha de la máscara oscura. Es 5"
 {
 	fuerzaOscura.provocaUnEclipse()
 	assert.equals(mascaraOscura.decimeTuPoder(rolando), 5)
 }
 
-test "Eliminar la máscara oscura de los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando."
+test "Eliminar la máscara oscura de los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando. Es de 9"
 {
 	rolando.quitarUnArtefacto(mascaraOscura)	
 	assert.equals(rolando.decimeTuHabilidadParaLucha(), 9)

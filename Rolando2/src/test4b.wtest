@@ -14,48 +14,48 @@ describe "Tests del punto 4" {
 	const prieto = new ComercianteRegistrado()
 	const fermepin = new ComercianteConImpuestoALasGanancias(minimoNoImponible = 5)
 
-	test "Ursula le compra la mascara oscura a Pastoriza" {
+	test "Ursula le compra la mascara oscura a Pastoriza. Queda con 89.1 monedas" {
 		ursula.comprar(mascaraOscura, pastoriza)
 		assert.equals(89.1, ursula.monedas())
 	}
 	
-	test "Ursula le compra la mascara oscura a Prieto" {
+	test "Ursula le compra la mascara oscura a Prieto. Queda con 87.9 monedas" {
 		ursula.comprar(mascaraOscura, prieto)
 		assert.equals(87.9, ursula.monedas())
 	}
 	
-	test "Ursula le compra la mascara oscura a Fermepin" {
+	test "Ursula le compra la mascara oscura a Fermepin.Queda con 88.25 monedas" {
 		ursula.comprar(mascaraOscura, fermepin)
 		assert.equals(88.25, ursula.monedas())
 	}
 	
-	test "Recategorizar a pastoriza. Hacer que Ursula le compre la mascara oscura a pastoriza" {
+	test "Recategorizar a pastoriza. Hacer que Ursula le compre la mascara oscura a pastoriza. Queda con 88.2 monedas" {
 		pastoriza.recategorizar(self)
 		ursula.comprar(mascaraOscura, pastoriza)
 		assert.equals(88.2, ursula.monedas())
 	}
 	
-	test "Recategorizar a pastoriza dos veces. Hacer que Ursula le compre la mascara oscura a pastoriza" {
+	test "Recategorizar a pastoriza dos veces. Hacer que Ursula le compre la mascara oscura a pastoriza. Queda con 87.9 monedas" {
 		pastoriza.recategorizar(self)
 		pastoriza.recategorizar(self)
 		ursula.comprar(mascaraOscura, pastoriza)
 		assert.equals(87.9, ursula.monedas())
 	}
 	
-	test "Recategorizar a pastoriza dos veces. Hacer que Ursula le compre la mascara oscura a pastoriza" {
+	test "Recategorizar a pastoriza dos veces. Hacer que Ursula le compre la mascara oscura a pastoriza. Queda con 87.9 monedas" {
 		pastoriza.recategorizar(self)
 		pastoriza.recategorizar(self)
 		ursula.comprar(mascaraOscura, pastoriza)
 		assert.equals(87.9, ursula.monedas())
 	}
 	
-	test "Recategorizar a prieto. Hacer que Ursula le compre la mascara oscura a Prieto" {
+	test "Recategorizar a prieto. Hacer que Ursula le compre la mascara oscura a Prieto. Queda con 88.25 monedas" {
 		prieto.recategorizar(self)
 		ursula.comprar(mascaraOscura, prieto)
 		assert.equals(88.25, ursula.monedas())
 	}
 	
-	test "Recategorizar a Fermepin. Hacer que Ursula le compre la máscara oscura a Fermepin" {
+	test "Recategorizar a Fermepin. Hacer que Ursula le compre la máscara oscura a Fermepin. Queda con 88.25 monedas" {
 		fermepin.recategorizar(self)
 		ursula.comprar(mascaraOscura, fermepin)
 		assert.equals(88.25, ursula.monedas())

@@ -43,6 +43,8 @@ class Personaje {
 	method decimeSiEstasCargado() = self.artefactos().size() >= 5
 
 	method mejorArtefacto() = self.artefactos().max({ artefacto => artefacto.decimeTuPoder() })
+	
+	method artefactosSin(unArtefacto) = self.artefactos().filter({ otroArtefacto => otroArtefacto != unArtefacto}).map({ otroArtefacto => otroArtefacto.decimeTuPoder(self)}) 
 
 	method cumpliUnObjetivo() {
 		monedas += 10

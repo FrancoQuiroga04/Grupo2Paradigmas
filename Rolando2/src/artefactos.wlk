@@ -44,7 +44,7 @@ class CollarDivino inherits Artefacto{
 	
 	method decimeTuPoder(duenio) = cantidadDePerlas
 	
-	override method pesoExtra(duenio) = self.cantidadDePerlas()
+	override method pesoExtra(duenio) = self.cantidadDePerlas() * 0.5
 }
 
 class MascaraOscura inherits Artefacto {

@@ -11,48 +11,48 @@ describe "Tests del punto 1" {
 	const furibunda = new Personaje(hechizoPreferido = hechizoComercial)
 
 
-test "Saber el nivel de hechicería de Furibunda."{
+test "Saber el nivel de hechicería de Furibunda. Es 29"{
 	assert.equals(furibunda.valorDeHechiceria(), 29)
 }
 
-test "Saber si el hechizo comercial es poderoso"{
+test "Saber si el hechizo comercial es poderoso. No lo es"{
 	assert.notThat(hechizoComercial.esPoderoso(furibunda))
 }
 
-test "Saber si el espectro malefico es poderoso"{
+test "Saber si el espectro malefico es poderoso. Lo es"{
 	assert.that(espectroMalefico.esPoderoso(furibunda))
 }
 
-test "Hacer que ocurra un eclipse. Conocer el nivel de hechicería de Rolando."{
+test "Hacer que ocurra un eclipse. Conocer el nivel de hechicería de Rolando. Sera 61"{
 	fuerzaOscura.provocaUnEclipse() 
 	assert.equals(rolando.valorDeHechiceria(), 61)
 }
 
-test "Conocer el nivel de hechicería de Rolando"{
+test "Conocer el nivel de hechicería de Rolando. Sera 56"{
 		assert.equals(rolando.valorDeHechiceria(), 56)
 }
 
-test "Cambiar el nombre del espectro maléfico a 'espectro superrecontramalefico muajajaja'. Conocer el nivel de hechicería de Rolando "{
+test "Cambiar el nombre del espectro maléfico a 'espectro superrecontramalefico muajajaja'. Conocer el nivel de hechicería de Rolando. Sera 125 "{
 	espectroMalefico.nombre('espectro superrecontramalefico muajajaja') 
 	assert.equals(rolando.valorDeHechiceria(), 125)
 }
 
-test "Cambiar el hechizo preferido de Rolando para que sea el hechizo básico. Conocer el nivel de hechicería de Rolando."{
+test "Cambiar el hechizo preferido de Rolando para que sea el hechizo básico. Conocer el nivel de hechicería de Rolando. Sera 35"{
 	rolando.hechizoPreferido(hechizoBasico)
 	assert.equals(rolando.valorDeHechiceria(), 35)
 }
 
-test "Saber si el espectro maléfico es poderoso."{
+test "Saber si el espectro maléfico es poderoso. Lo es"{
 		rolando.hechizoPreferido(espectroMalefico)
 		assert.that(rolando.seCreePoderoso())
 }
 
-test "Cambiar el nombre del espectro maléfico a 'pepe'. Saber si el espectro maléfico es poderoso."{
+test "Cambiar el nombre del espectro maléfico a 'pepe'. Saber si el espectro maléfico es poderoso. No sera cierto"{
 		espectroMalefico.nombre('pepe')
 		assert.notThat(rolando.seCreePoderoso())
 }
 
-test "Saber si el hechizo básico es poderoso."{
+test "Saber si el hechizo básico es poderoso. Lo sera"{
 	rolando.hechizoPreferido(hechizoBasico)
 	assert.equals(rolando.valorDeHechiceria(), 35)
 }

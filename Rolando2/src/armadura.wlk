@@ -7,14 +7,10 @@ class Armadura inherits Artefacto{
 	var property refuerzo
 	var property valorBase = 5
 
-	method decimeTuPoder(duenio) = if (self.refuerzo() == null) {
-		return 0
-	} else {
-		return self.refuerzo().decimeTuPoder(duenio)
-	}
+	method decimeTuPoder(duenio) = self.refuerzo().decimeTuPoder(duenio)
 	
 	override method precioEnMonedas(duenio) = self.refuerzo().precioEnMonedas()
-	override method pesoExtra(duenio) = self.refuerzo().pesoExtra(duenio)
+	override method pesoExtra(duenio) = self.refuerzo().pesoExtra(duenio) + self.peso()
 }
 
 object ningunRefuerzo inherits Artefacto{
@@ -25,32 +21,32 @@ object ningunRefuerzo inherits Artefacto{
 
 }
 
-class CotaDeMalla inherits Artefacto  {
+class CotaDeMalla   {
 
 	var property poder
 	method decimeTuPoder(duenio) = poder
 
-	override method precioEnMonedas(duenio) = self.decimeTuPoder(duenio) / 2
-	override method pesoExtra(duenio) = 1
+	method precioEnMonedas(duenio) = self.decimeTuPoder(duenio) / 2
+	method pesoExtra(duenio) = 1
 
 }
 
-class Bendicion inherits Artefacto {
+class Bendicion  {
 	
 	var property armadura
 	method decimeTuPoder(duenio) = duenio.valorDeHechiceria()	
-	override method precioEnMonedas(duenio) = self.armadura().valorBase() 
-	override method pesoExtra(duenio) = 0
+	method precioEnMonedas(duenio) = self.armadura().valorBase() 
+	method pesoExtra(duenio) = 0
 
 }
 
-class Espejo inherits Artefacto {
+class Espejo  {
 	
 	method decimeTuPoder(duenio) = if (duenio.artefactos() == [self]) {
 		return 0
 	} else {
-		duenio.artefactos().filter({ unArtefacto => unArtefacto != self}).map({ unArtefacto => unArtefacto.decimeTuPoder(duenio)}).max()
+		duenio.artefactosSin(self).max()
 	}
-	override method precioEnMonedas(duenio) = 90
-	override method pesoExtra(duenio) = 0
+	method precioEnMonedas(duenio) = 90
+	method pesoExtra(duenio) = 0
 }
